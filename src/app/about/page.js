@@ -54,6 +54,8 @@ export default function About() {
             muted
             loop
             playsInline
+            preload="metadata"
+            poster="/about-preload.jpg"
             className="w-full h-full object-cover"
           >
             <source src="/about.mp4" type="video/mp4" />
@@ -108,7 +110,8 @@ export default function About() {
             {/* Image */}
             <div data-aos="fade-right">
               <div className="bg-gray-200 rounded-2xl overflow-hidden shadow-lg aspect-[4/3]">
-                <span className="flex items-center justify-center h-full text-gray-400 text-lg">صورة فريق العمل</span>
+                 <img src="/about-1.jpg" alt="About Us" className="w-full h-full " />
+
               </div>
             </div>
           </div>
@@ -139,13 +142,21 @@ export default function About() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative">
+        <div className="absolute inset-0">
+          <img
+            src="/about-2.png"
+            alt="Stats Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, idx) => (
               <div key={idx} className="text-center" data-aos="fade-up" data-aos-delay={idx * 100}>
-                <p className="text-4xl md:text-5xl font-bold text-yellow-700">{stat.number}</p>
-                <p className="mt-2 text-gray-400">{stat.label}</p>
+                <p className="text-4xl md:text-5xl font-bold text-yellow-500">{stat.number}</p>
+                <p className="mt-2 text-gray-300">{stat.label}</p>
               </div>
             ))}
           </div>

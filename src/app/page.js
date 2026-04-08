@@ -39,6 +39,8 @@ export default function Home() {
             muted
             loop
             playsInline
+            preload="metadata"
+            poster="/Hero-preload.jpg"
             className="h-full w-full object-cover"
             src="/Hero.mp4"
           />

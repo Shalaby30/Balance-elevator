@@ -76,7 +76,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">رقم الهاتف</p>
-                    <p className="text-gray-600">+966 50 000 0000</p>
+                    <p className="text-gray-600">01014466479</p>
                   </div>
                 </div>
                 
@@ -89,7 +89,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">الموقع</p>
-                    <p className="text-gray-600">الرياض، المملكة العربية السعودية</p>
+                    <p className="text-gray-600">سيدي بشر – 100م متفرع من حسن رفعت خلف الأمن المركزي – برج اللؤلؤة</p>
                   </div>
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-700 focus:border-transparent outline-none text-black"
-                    placeholder="05xxxxxxxx"
+                    placeholder="01XXXXXXXXX"
                   />
                 </div>
                 <div>
