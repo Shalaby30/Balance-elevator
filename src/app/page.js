@@ -1,16 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Loader from "../components/Loader";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     AOS.init({
       duration: 800,
       once: true,
       mirror: false,
     });
+    
+    // Simulate loading completion
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   const services = [
@@ -30,7 +37,9 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      {loading && <Loader />}
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen">
         <div className="absolute inset-0">
@@ -56,10 +65,10 @@ export default function Home() {
                 نقدم حلولاً متكاملة للمصاعد والسلالم الكهربائية والمماشي المتحركة بأعلى معايير الجودة والسلامة
               </p>
               <div className="mt-8 flex gap-4 justify-center">
-                <button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-medium transition">
+                <button className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
                   اكتشف المزيد
                 </button>
-                <button className="border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition">
+                <button className="border-2 border-white text-white hover:bg-white/20 px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
                   تواصل معنا
                 </button>
               </div>
@@ -94,10 +103,11 @@ export default function Home() {
                 شركة بالانس رائدة في مجال المصاعد والسلالم الكهربائية والمماشي المتحركة. نقدم حلولاً متكاملة تشمل التركيب والصيانة وقطع الغيار بأعلى معايير الجودة والسلامة.
               </p>
               <p className="mt-4 text-gray-600 leading-relaxed">
-                نعمل مع كبرى الشركات والفنادق والمولات التجارية لتقديم أفضل الخدمات بأيدي فريق متخصص ذو خبرة عالية في هذا المجال.
+                ن��مل مع كبرى الشركات والفنادق والمولات التجارية لتقديم أفضل الخدمات بأيدي فريق متخصص ذو خبرة عالية في هذا المجال.
               </p>
-              <button className="mt-6 text-black font-semibold hover:text-gray-600">
-                اقرأ المزيد ←
+              <button className="mt-6 text-black font-semibold hover:text-yellow-700 transition-colors duration-300 inline-flex items-center gap-2">
+                اقرأ المزيد 
+                <span className="transform transition-transform group-hover:translate-x-1">←</span>
               </button>
             </div>
           </div>
@@ -116,23 +126,23 @@ export default function Home() {
               نقدم مجموعة متكاملة من الخدمات لتلبية جميع احتياجاتك في مجال المصاعد والسلالم الكهربائية
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, idx) => (
-              <div key={idx} className="relative mt-8">
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
-                  <div className="w-16 h-16 bg-yellow-700 rounded-full flex items-center justify-center shadow-lg">
+              <div key={idx} className="relative mt-8 group">
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 transition-transform group-hover:scale-110 duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-600 to-yellow-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl">
                     {service.icon}  
                   </div>
                 </div>
-                <div className="bg-stone-100 rounded-xl pt-12 pb-8 px-8 text-center hover:shadow-lg transition">
-                  <h3 className="text-lg font-bold text-gray-900 mt-2  border-b-2 border-yellow-700 inline-block">{service.title}</h3>
-                  <p className="mt-3 text-gray-600 text-sm leading-relaxed">{service.desc}</p>
+                <div className="bg-gradient-to-br from-stone-50 to-stone-100 rounded-xl pt-12 pb-8 px-8 text-center hover:shadow-2xl transition-all duration-300 border border-stone-200 hover:border-yellow-700/50 group-hover:-translate-y-2">
+                  <h3 className="text-lg font-bold text-gray-900 mt-2 border-b-2 border-yellow-700 inline-block pb-1">{service.title}</h3>
+                  <p className="mt-4 text-gray-600 text-sm leading-relaxed">{service.desc}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className="text-center mt-10">
-            <button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-medium transition">
+            <button className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
               جميع الخدمات
             </button>
           </div>
@@ -150,13 +160,13 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {projects.map((project, idx) => (
-              <div key={idx} className="group relative overflow-hidden rounded-xl">
+              <div key={idx} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
                 <img 
                   src={project.img} 
                   alt={project.title}
-                  className="w-full h-full object-cover aspect-[4/3]"
+                  className="w-full h-full object-cover aspect-[4/3] group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-6">
                   <h3 className="text-white font-bold text-xl">{project.title}</h3>
                 </div>
               </div>
@@ -220,25 +230,25 @@ export default function Home() {
                 <input 
                   type="text" 
                   placeholder="الاسم الكامل" 
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black" 
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
                 />
                 <input 
                   type="tel" 
                   placeholder="رقم الجوال" 
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black" 
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
                 />
               </div>
               <input 
                 type="email" 
                 placeholder="البريد الإلكتروني" 
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black" 
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
               />
               <input 
                 type="text" 
                 placeholder="العنوان / الموقع" 
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black" 
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
               />
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black">
+              <select className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200">
                 <option value="">نوع الخدمة المطلوبة</option>
                 <option value="install">تركيب مصعد جديد</option>
                 <option value="maintain">صيانة دورية</option>
@@ -248,15 +258,16 @@ export default function Home() {
               <textarea 
                 rows="4" 
                 placeholder="ملاحظات إضافية (اختياري)" 
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black"
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200 resize-none"
               ></textarea>
-              <button className="w-full bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-lg font-medium transition text-lg">
+              <button className="w-full bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-800 hover:to-yellow-700 text-white py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg text-lg">
                 إرسال طلب المعاينة
               </button>
             </form>
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
