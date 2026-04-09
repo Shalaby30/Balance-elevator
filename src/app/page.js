@@ -76,8 +76,8 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative" data-aos="fade-left">
               <div className="bg-gray-100 rounded-2xl p-4">
-                <div className="bg-gray-200 rounded-xl aspect-[4/3] flex items-center justify-center">
-                  <img src="/about-home.png" alt="About Us" className="w-full h-full " />
+                <div className="bg-gray-200 rounded-xl aspect-[4/3] flex items-center justify-center overflow-hidden">
+                  <img src="/elevator-maintain.jpg" alt="About Us" className="w-full h-full object-cover" />
                 </div>
               </div>
               <div className="absolute -bottom-6 -left-6 bg-black text-white p-4 rounded-lg">
@@ -151,9 +151,11 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {projects.map((project, idx) => (
               <div key={idx} className="group relative overflow-hidden rounded-xl">
-                <div className="bg-gray-200 aspect-[4/3] flex items-center justify-center">
-                  <span className="text-gray-400">صورة المشروع</span>
-                </div>
+                <img 
+                  src={project.img} 
+                  alt={project.title}
+                  className="w-full h-full object-cover aspect-[4/3]"
+                />
                 <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                   <h3 className="text-white font-bold text-xl">{project.title}</h3>
                 </div>
@@ -191,8 +193,8 @@ export default function Home() {
             </div>
             <div className="relative" data-aos="fade-right">
               <div className="bg-gray-100 rounded-2xl p-4">
-                <div className="bg-gray-200 rounded-xl aspect-[4/3] flex items-center justify-center">
-                  <img src="/home-2.jpg" alt="About Us" className="w-full h-full rounded  " />
+                <div className="bg-gray-200 rounded-xl aspect-[4/3] flex items-center justify-center overflow-hidden">
+                  <img src="/elevator-install.jpg" alt="Why Choose Us" className="w-full h-full object-cover rounded" />
                 </div>
               </div>
             </div>
