@@ -77,8 +77,8 @@ export default function Services() {
         "إصلاح الأعطال",
         "تحديث الأنظمة"
       ],
-      image: "/1.jpg",
-      imageAlt: "السلالم 6468468 الكهربائية"
+      image: "/escalator.jpg",
+      imageAlt: "السلالم الكهربائية"
     },
     {
       id: "consult",
@@ -101,7 +101,12 @@ export default function Services() {
       {/* Hero Section */}
       <section className="relative min-h-[400px] pt-16 bg-gray-900">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-l from-yellow-900/20 to-gray-900/90" />
+          <img 
+            src="/services-hero.jpg" 
+            alt="خدماتنا" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-l from-yellow-900/30 to-gray-900/80" />
         </div>
         <div className="relative z-10 flex items-center justify-center min-h-[400px]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">

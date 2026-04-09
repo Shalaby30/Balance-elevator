@@ -110,7 +110,7 @@ export default function About() {
             {/* Image */}
             <div data-aos="fade-right">
               <div className="bg-gray-200 rounded-2xl overflow-hidden shadow-lg aspect-[4/3]">
-                 <img src="/about-1.jpg" alt="About Us" className="w-full h-full " />
+                 <img src="/elevator-maintain.jpg" alt="About Us" className="w-full h-full object-cover" />
 
               </div>
             </div>
@@ -170,7 +170,7 @@ export default function About() {
             {/* Image */}
             <div data-aos="fade-left">
               <div className="bg-gray-200 rounded-2xl overflow-hidden shadow-lg aspect-[4/3]">
-                <span className="flex items-center justify-center h-full text-gray-400 text-lg">صورة رؤيتنا</span>
+                <img src="/elevator-modernize.jpg" alt="رؤيتنا" className="w-full h-full object-cover" />
               </div>
             </div>
             
@@ -236,7 +236,7 @@ export default function About() {
             {/* Image */}
             <div data-aos="fade-right">
               <div className="bg-gray-200 rounded-2xl overflow-hidden shadow-lg aspect-[4/3]">
-                <span className="flex items-center justify-center h-full text-gray-400 text-lg">صورة مهمتنا</span>
+                <img src="/consulting.jpg" alt="مهمتنا" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
