@@ -12,6 +12,9 @@ export default function Contact() {
     phone: "",
     message: ""
   });
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     AOS.init({
@@ -21,10 +24,38 @@ export default function Contact() {
     });
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("تم إرسال رسالتك بنجاح!");
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/submissions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          type: "contact"
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+        setTimeout(() => setSubmitted(false), 5000);
+      } else {
+        setError(data.error || "حدث خطأ أثناء الإرسال");
+      }
+    } catch (err) {
+      setError("خطأ في الاتصال بالخادم");
+      console.error("Submission error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -93,19 +124,20 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-              
-              <div className="mt-8">
-                <Link 
-                  href="tel:+966500000000" 
-                  className="inline-block bg-yellow-700 hover:bg-yellow-800 text-white px-8 py-3 rounded-lg font-medium transition"
-                >
-                  اتصل بنا الآن
-                </Link>
-              </div>
             </div>
 
                         {/* Form Side */}
             <div data-aos="fade-left">
+              {submitted && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
+                  ✓ شكراً لك! تم استقبال طلبك بنجاح. سيتواصل معك فريقنا قريباً.
+                </div>
+              )}
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-center">
+                  ✗ {error}
+                </div>
+              )}
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -158,9 +190,14 @@ export default function Contact() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-yellow-700 hover:bg-yellow-800 text-white py-4 rounded-lg font-medium transition text-lg"
+                  disabled={loading}
+                  className={`w-full py-4 rounded-lg font-semibold transition text-lg ${
+                    loading
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : "bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-800 hover:to-yellow-700 text-white"
+                  }`}
                 >
-                  إرسال
+                  {loading ? "جارٍ الإرسال..." : "إرسال"}
                 </button>
               </form>
             </div>

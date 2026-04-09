@@ -7,6 +7,17 @@ import Loader from "../components/Loader";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    location: "",
+    service: "",
+    notes: ""
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     AOS.init({
@@ -19,6 +30,51 @@ export default function Home() {
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const response = await fetch("/api/submissions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: `الموقع: ${formData.location}\nالخدمة: ${formData.service}\nملاحظات: ${formData.notes}`,
+          type: "inspection"
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitSuccess(true);
+        setFormData({ name: "", phone: "", email: "", location: "", service: "", notes: "" });
+        setTimeout(() => setSubmitSuccess(false), 5000);
+      } else {
+        setSubmitError(data.error || "حدث خطأ أثناء الإرسال");
+      }
+    } catch (err) {
+      setSubmitError("خطأ في الاتصال بالخادم");
+      console.error("Form submission error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const services = [
     { icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>, title: "تركيب المصاعد", desc: "نقدم خدمات تركيب المصاعد بأعلى معايير الجودة والسلامة، مع ضمان شامل على جميع أعمال التركيب" },
@@ -105,7 +161,7 @@ export default function Home() {
               <p className="mt-4 text-gray-600 leading-relaxed">
                 ن��مل مع كبرى الشركات والفنادق والمولات التجارية لتقديم أفضل الخدمات بأيدي فريق متخصص ذو خبرة عالية في هذا المجال.
               </p>
-              <button className="mt-6 text-black font-semibold hover:text-yellow-700 transition-colors duration-300 inline-flex items-center gap-2">
+              <button className="mt-6 text-black font-semibold hover:text-yellow-700 transition-colors duration-300 inline-flex items-center gap-2 group">
                 اقرأ المزيد 
                 <span className="transform transition-transform group-hover:translate-x-1">←</span>
               </button>
@@ -225,30 +281,60 @@ export default function Home() {
                 املأ النموذج التالي وسنقوم بالتواصل معك لتحديد موعد المعاينة
               </p>
             </div>
-            <form className="space-y-5">
+            {submitSuccess && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
+                ✓ شكراً لك! تم استقبال طلب المعاينة بنجاح. سيتواصل معك فريقنا قريباً.
+              </div>
+            )}
+            {submitError && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-center">
+                ✗ {submitError}
+              </div>
+            )}
+            <form onSubmit={handleFormSubmit} className="space-y-5">
               <div className="grid md:grid-cols-2 gap-5">
                 <input 
                   type="text" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleFormChange}
                   placeholder="الاسم الكامل" 
                   className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
+                  required
                 />
                 <input 
                   type="tel" 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleFormChange}
                   placeholder="رقم الجوال" 
                   className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
+                  required
                 />
               </div>
               <input 
                 type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
                 placeholder="البريد الإلكتروني" 
                 className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
+                required
               />
               <input 
                 type="text" 
+                name="location"
+                value={formData.location}
+                onChange={handleFormChange}
                 placeholder="العنوان / الموقع" 
                 className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
               />
-              <select className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200">
+              <select 
+                name="service"
+                value={formData.service}
+                onChange={handleFormChange}
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200"
+              >
                 <option value="">نوع الخدمة المطلوبة</option>
                 <option value="install">تركيب مصعد جديد</option>
                 <option value="maintain">صيانة دورية</option>
@@ -256,12 +342,23 @@ export default function Home() {
                 <option value="consult">استشارة فنية</option>
               </select>
               <textarea 
+                name="notes"
+                value={formData.notes}
+                onChange={handleFormChange}
                 rows="4" 
                 placeholder="ملاحظات إضافية (اختياري)" 
                 className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200 resize-none"
               ></textarea>
-              <button className="w-full bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-800 hover:to-yellow-700 text-white py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg text-lg">
-                إرسال طلب المعاينة
+              <button 
+                type="submit"
+                disabled={submitting}
+                className={`w-full py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg text-lg ${
+                  submitting
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : "bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-800 hover:to-yellow-700 text-white transform hover:scale-105"
+                }`}
+              >
+                {submitting ? "جاري الإرسال..." : "إرسال طلب المعاينة"}
               </button>
             </form>
           </div>
