@@ -5,10 +5,17 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+let supabase = null;
+
+function getSupabase() {
+  if (!supabase) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+  }
+  return supabase;
+}
 
 export default function SpareParts() {
   const [parts, setParts] = useState([]);
@@ -36,7 +43,7 @@ export default function SpareParts() {
 
   const fetchParts = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from("spare_parts")
         .select("*")
         .order("created_at", { ascending: false });
