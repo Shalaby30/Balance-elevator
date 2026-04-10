@@ -1,82 +1,82 @@
-import fs from 'fs';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
-// Store submissions in a JSON file
-const submissionsDir = path.join(process.cwd(), 'data');
-const submissionsFile = path.join(submissionsDir, 'submissions.json');
-
-// Ensure data directory exists
-if (!fs.existsSync(submissionsDir)) {
-  fs.mkdirSync(submissionsDir, { recursive: true });
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  
+  return createClient(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    }
+  });
 }
 
-// Get all submissions
+// Get all service requests (requires auth)
 export async function GET() {
   try {
-    if (!fs.existsSync(submissionsFile)) {
-      return Response.json({ submissions: [] });
-    }
+    const supabase = getSupabase();
+    const { data: requests, error } = await supabase
+      .from('service_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
     
-    const data = fs.readFileSync(submissionsFile, 'utf-8');
-    const submissions = JSON.parse(data);
+    if (error) throw error;
     
     return Response.json({ 
       success: true, 
-      submissions,
-      count: submissions.length 
+      requests: requests || [],
+      count: requests?.length || 0
     });
   } catch (error) {
-    console.error('Error reading submissions:', error);
+    console.error('Error reading requests:', error);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
-// Create new submission
+// Create new service request (public - no auth required)
 export async function POST(request) {
   try {
     const body = await request.json();
     
     // Validate required fields
-    if (!body.name || !body.email || !body.phone) {
+    if (!body.name || !body.phone || !body.service_type) {
       return Response.json(
-        { success: false, error: 'اسم وبريد وجوال مطلوبة' },
+        { success: false, error: 'الاسم والجوال ونوع الخدمة مطلوبة' },
         { status: 400 }
       );
     }
 
-    const submission = {
-      id: Date.now(),
+    const serviceRequest = {
       name: body.name,
-      email: body.email,
       phone: body.phone,
-      message: body.message || '',
-      type: body.type || 'contact',
-      createdAt: new Date().toISOString(),
+      email: body.email || null,
+      service_type: body.service_type,
+      location: body.location || null,
+      message: body.message || null,
     };
 
-    // Read existing submissions
-    let submissions = [];
-    if (fs.existsSync(submissionsFile)) {
-      const data = fs.readFileSync(submissionsFile, 'utf-8');
-      submissions = JSON.parse(data);
-    }
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from('service_requests')
+      .insert([serviceRequest])
+      .select();
 
-    // Add new submission
-    submissions.push(submission);
+    if (error) throw error;
 
-    // Write back to file
-    fs.writeFileSync(submissionsFile, JSON.stringify(submissions, null, 2));
-
-    // Here you could integrate with email service
-    console.log('New submission received:', submission);
+    console.log('New service request received:', data);
 
     return Response.json({ 
       success: true, 
       message: 'تم استقبال طلبك بنجاح. سيتواصل معك فريقنا قريباً',
-      submission 
+      request: data?.[0]
     });
   } catch (error) {
-    console.error('Error creating submission:', error);
+    console.error('Error creating request:', error);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }

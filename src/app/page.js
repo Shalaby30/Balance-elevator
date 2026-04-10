@@ -44,6 +44,14 @@ export default function Home() {
     setSubmitting(true);
     setSubmitError("");
 
+    // Map service value to Arabic service_type
+    const serviceTypeMap = {
+      "install": "تركيب مصعد جديد",
+      "maintain": "صيانة دورية",
+      "repair": "إصلاح عطل",
+      "consult": "استشارة فنية"
+    };
+
     try {
       const response = await fetch("/api/submissions", {
         method: "POST",
@@ -54,8 +62,9 @@ export default function Home() {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: `الموقع: ${formData.location}\nالخدمة: ${formData.service}\nملاحظات: ${formData.notes}`,
-          type: "inspection"
+          location: formData.location,
+          service_type: serviceTypeMap[formData.service] || "استشارة فنية",
+          message: formData.notes,
         }),
       });
 
@@ -319,7 +328,7 @@ export default function Home() {
                 onChange={handleFormChange}
                 placeholder="البريد الإلكتروني" 
                 className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-yellow-700 focus:outline-none bg-white text-black transition-colors duration-200" 
-                required
+                
               />
               <input 
                 type="text" 

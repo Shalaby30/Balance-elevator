@@ -164,7 +164,7 @@ export default function ClientLayout({ children }) {
               <ul className="space-y-2 text-gray-400">
                 <li>تركيب المصاعد</li>
                 <li>صيانة المصاعد</li>
-                <li>قطع الغيار</li>
+                <li><Link href="/spare-parts" className="hover:text-white">قطع الغيار</Link></li>
                 <li>تحديث المصاعد</li>
               </ul>
             </div>
