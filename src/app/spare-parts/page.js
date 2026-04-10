@@ -5,15 +5,21 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { createClient } from "@supabase/supabase-js";
 
-// Get Supabase credentials from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
+// Lazy initialization of Supabase client
+let supabase = null;
+function getSupabase() {
+  if (!supabase) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return null;
+    }
+    
+    supabase = createClient(supabaseUrl, supabaseKey);
+  }
+  return supabase;
 }
-
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function SpareParts() {
   const [parts, setParts] = useState([]);
@@ -40,18 +46,25 @@ export default function SpareParts() {
   }, []);
 
   const fetchParts = async () => {
+    const supabaseClient = getSupabase();
+    if (!supabaseClient) {
+      setError("Missing Supabase configuration");
+      setLoading(false);
+      return;
+    }
+    
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("spare_parts")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setParts(data || []);
+      setLoading(false);
     } catch (err) {
-      setError("خطأ في تحميل قطع الغيار");
+      setError("حدث خطأ أثناء تحميل البيانات");
       console.error("Error fetching parts:", err);
-    } finally {
       setLoading(false);
     }
   };
