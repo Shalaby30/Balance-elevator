@@ -2,10 +2,14 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-// Temporarily hardcoded - move to env vars later
-const SUPABASE_URL = 'https://qlnekecubhblxpzlynab.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_knJxUIQ1kPMutanPNjtnSA_eobmdbs8';
+let supabase = null;
 
 export function getSupabaseBrowser() {
-  return createClient(SUPABASE_URL, SUPABASE_KEY);
+  if (!supabase) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+  }
+  return supabase;
 }
