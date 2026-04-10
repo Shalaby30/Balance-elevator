@@ -5,21 +5,10 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { createClient } from "@supabase/supabase-js";
 
-// Lazy initialization of Supabase client
-let supabase = null;
-function getSupabase() {
-  if (!supabase) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseKey) {
-      return null;
-    }
-    
-    supabase = createClient(supabaseUrl, supabaseKey);
-  }
-  return supabase;
-}
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default function SpareParts() {
   const [parts, setParts] = useState([]);
@@ -46,25 +35,18 @@ export default function SpareParts() {
   }, []);
 
   const fetchParts = async () => {
-    const supabaseClient = getSupabase();
-    if (!supabaseClient) {
-      setError("Missing Supabase configuration");
-      setLoading(false);
-      return;
-    }
-    
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from("spare_parts")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setParts(data || []);
-      setLoading(false);
     } catch (err) {
-      setError("حدث خطأ أثناء تحميل البيانات");
+      setError("خطأ في تحميل قطع الغيار");
       console.error("Error fetching parts:", err);
+    } finally {
       setLoading(false);
     }
   };
@@ -144,7 +126,7 @@ export default function SpareParts() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-
+      
       {/* Spare Parts Grid */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -168,7 +150,7 @@ export default function SpareParts() {
               <p className="text-gray-600 font-medium">لا توجد قطع غيار متوفرة حالياً</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {parts.map((part, idx) => {
                 const isSelected = selectedParts.find(p => p.id === part.id);
                 return (
@@ -232,7 +214,7 @@ export default function SpareParts() {
                             </button>
                             <button
                               onClick={() => togglePartSelection(part)}
-                              className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-200 transition ml-1"
+                              className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-200 transition"
                               title="إزالة من العربة"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

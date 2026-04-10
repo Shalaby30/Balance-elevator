@@ -1,14 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
+const SUPABASE_URL = 'https://qlnekecubhblxpzlynab.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_knJxUIQ1kPMutanPNjtnSA_eobmdbs8';
+
 function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  if (!url || !key) {
-    throw new Error('Missing Supabase environment variables');
-  }
-  
-  return createClient(url, key, {
+  return createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -54,11 +50,9 @@ export async function POST(request) {
     const sparePartRequest = {
       name: body.name,
       phone: body.phone,
-      email: body.email || null,
       location: body.location || null,
       parts: body.parts,
-      notes: body.notes || null,
-      status: 'pending'
+      notes: body.notes || null
     };
 
     const supabase = getSupabase();
