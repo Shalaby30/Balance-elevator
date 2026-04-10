@@ -8,17 +8,17 @@ import { getSupabaseBrowser } from "@/lib/supabase-browser";
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    console.log("Login clicked, email:", email);
 
     try {
       const supabase = getSupabaseBrowser();
+      console.log("Supabase client:", supabase);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -32,8 +32,6 @@ export default function AdminLogin() {
     } catch (err) {
       setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
       console.error("Login error:", err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -83,14 +81,9 @@ export default function AdminLogin() {
 
             <button
               type="submit"
-              disabled={loading}
-              className={`w-full py-3 rounded-lg font-semibold transition ${
-                loading
-                  ? "bg-gray-400 text-white cursor-not-allowed"
-                  : "bg-yellow-700 hover:bg-yellow-800 text-white"
-              }`}
+              className="w-full py-3 rounded-lg font-semibold transition bg-yellow-700 hover:bg-yellow-800 text-white"
             >
-              {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+              تسجيل الدخول
             </button>
           </form>
 
